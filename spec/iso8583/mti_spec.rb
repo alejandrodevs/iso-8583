@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe ISO8583::MTI do
-  MTI = '0810'
-  subject { described_class.new(MTI) }
+  let(:mti) { '0810' }
+  subject { described_class.new(mti) }
 
   it 'has an ISO version' do
     expect(subject.iso_version).to eql '0'

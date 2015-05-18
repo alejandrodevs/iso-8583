@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe ISO8583::MTI::ISOVersion do
+  it { expect(subject).to be_kind_of(ISO8583::MTI::BaseField) }
+
   describe '#meaning' do
     it { expect(described_class.new('0').meaning).to eql 'ISO 8583-1:1987 version' }
     it { expect(described_class.new('1').meaning).to eql 'ISO 8583-2:1993 version' }
