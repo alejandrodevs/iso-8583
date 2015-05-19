@@ -1,10 +1,12 @@
 require 'spec_helper'
 
 RSpec.describe ISO8583::Message do
-  let(:mti)       { '0810' }
-  let(:bitmap)    { '82200000020000000400000000000000' }
-  let(:data)      { '082108321601579500301' }
-  let!(:message)  { mti + bitmap + data }
+  let(:mti)               { '0810' }
+  let(:primary_bitmap)    { '8220000002000000' }
+  let(:secondary_bitmap)  { '0400000000000000' }
+  let(:bitmap)            { primary_bitmap + secondary_bitmap }
+  let(:data)              { '082108321601579500301' }
+  let!(:message)          { mti + bitmap + data }
 
   subject { described_class.new(message) }
 
@@ -36,12 +38,12 @@ RSpec.describe ISO8583::Message do
   end
 
   describe '#data' do
-    it { expect(subject.data).to eql data }
+    it { expect(subject.data).to eql secondary_bitmap + data }
     it { expect(subject.data).to be_kind_of ISO8583::Data }
   end
 
   describe '#nodata' do
-    it { expect(subject.nodata).to eql mti + bitmap }
+    it { expect(subject.nodata).to eql mti + primary_bitmap }
     it { expect(subject.nodata).to be_kind_of String }
   end
 end

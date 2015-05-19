@@ -34,7 +34,7 @@ module ISO8583
     end
 
     def nodata
-      mti + bitmap
+      mti + primary_bitmap
     end
   end
 end
