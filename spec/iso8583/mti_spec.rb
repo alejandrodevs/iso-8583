@@ -4,6 +4,9 @@ RSpec.describe ISO8583::MTI do
   let(:mti) { '0810' }
   subject { described_class.new(mti) }
 
+  it { expect(subject).to be_kind_of(String) }
+  it { expect(subject).to eql mti }
+
   it 'has an ISO version' do
     expect(subject.iso_version).to eql '0'
     expect(subject.iso_version).to be_kind_of ISO8583::MTI::ISOVersion

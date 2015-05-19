@@ -8,6 +8,7 @@ require 'iso8583/mti/message_class'
 require 'iso8583/mti/message_function'
 require 'iso8583/mti/message_origin'
 require 'iso8583/bitmap'
+require 'iso8583/data'
 
 module ISO8583
   # Your code goes here...
