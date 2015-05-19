@@ -1,5 +1,5 @@
 module ISO8583
-  class Data::Element < String
+  class Field < String
     attr_reader :definition
 
     def initialize(string, definition)

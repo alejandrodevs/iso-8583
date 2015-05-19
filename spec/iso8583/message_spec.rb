@@ -33,10 +33,6 @@ RSpec.describe ISO8583::Message do
     it { expect(subject.secondary_bitmap).to be_kind_of ISO8583::Bitmap }
   end
 
-  describe '#fields' do
-    it { expect(subject.fields).to eql [1, 7, 11, 39, 70] }
-  end
-
   describe '#data' do
     it { expect(subject.data).to eql secondary_bitmap + data }
     it { expect(subject.data).to be_kind_of ISO8583::Data }

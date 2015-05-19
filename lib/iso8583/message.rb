@@ -3,10 +3,8 @@ module ISO8583
     MTI_START   = 0
     MTI_LENGTH  = 4
 
-    BMPS        = 3
     BMP_START   = 4
     BMP_LENGTH  = 16
-
 
     def mti
       MTI.new(self[MTI_START, MTI_LENGTH])
@@ -21,16 +19,12 @@ module ISO8583
     end
 
     def secondary_bitmap
-      return unless primary_bitmap && primary_bitmap.fields.include?(1)
+      return unless primary_bitmap && primary_bitmap.elements.include?(1)
       Bitmap.new(self[BMP_START + (BMP_LENGTH * 1), BMP_LENGTH])
     end
 
-    def fields
-      bitmap.fields
-    end
-
     def data
-      Data.new(self[(nodata.size)...size], fields)
+      Data.new(self[(nodata.size)...size], bitmap.elements)
     end
 
     def nodata

@@ -1,21 +1,19 @@
 module ISO8583
   class Data < String
-    attr_reader :fields
+    attr_reader :elements
 
-    def initialize(string, fields)
-      @fields = fields
+    def initialize(string, elements)
+      @elements = elements
       super(string)
     end
 
-    def elements
+    def fields
       index = 0
-      fields.map do |field|
-        definition = Definition::FIELDS[field.to_s.to_sym]
-        type    = definition[:type]
-        length  = definition[:length]
-        length  = self[index, type.size].to_i + type.size unless type == :fixed
-        element = Element.new(self[index, length], definition)
-        index   += length
+      elements.map do |element|
+        definition = Definition::FIELDS[element.to_s.to_sym]
+        string = definition[:type].call(self, definition[:length], index)
+        element = Field.new(string, definition)
+        index += string.size
         element
       end
     end
