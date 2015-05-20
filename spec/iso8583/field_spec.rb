@@ -1,22 +1,45 @@
 require 'spec_helper'
 
 RSpec.describe ISO8583::Field do
-  let(:field) { '0123456789' }
-  let(:definition) do
-    {
-      field:  2,
-      length: 19,
-      codec:  /A-Z/,
-      type:   -> (data, length, index) { data[index, length] }
-    }
+  let(:id)      { 3 }
+  let(:data)    { '012345' }
+  let(:options) { { length: 6, codec: :N, type: :FIXED } }
+
+  subject { described_class.new(id, data, options) }
+  it_behaves_like 'a base field'
+
+  describe '#id' do
+    it { expect(subject.id).to eql id }
   end
 
-  subject { described_class.new(field, definition) }
+  describe '#options' do
+    it { expect(subject.options).to eql options }
+  end
 
-  it { expect(subject).to be_kind_of(String) }
-  it { expect(subject).to eql field }
+  describe '#value' do
+    context 'when it is FIXED' do
+      it { expect(subject.value).to eql data }
+    end
 
-  it 'has a definition' do
-    expect(subject.definition).to eql definition
+    context 'when it is LVAR' do
+      let(:options) { { length: 6, codec: :N, type: :LVAR } }
+      subject { described_class.new(id, data, options) }
+
+      it { expect(subject.value).to eql data[1, data.size] }
+    end
+
+    context 'when it is LLVAR' do
+      let(:options) { { length: 6, codec: :N, type: :LLVAR } }
+      subject { described_class.new(id, data, options) }
+
+      it { expect(subject.value).to eql data[2, data.size] }
+    end
+
+    context 'when it is LLLVAR' do
+      let(:options) { { length: 6, codec: :N, type: :LLLVAR } }
+      subject { described_class.new(id, data, options) }
+
+      it { expect(subject.value).to eql data[3, data.size] }
+    end
   end
 end

@@ -1,4 +1,7 @@
 # ISO8583
+ISO8583 Financial Messaging for Ruby. This gem aims to provide a easy
+and simple way to code an decode ISO8583 Financial Messages.
+
 
 ## Installation
 Add this line to your Gemfile:

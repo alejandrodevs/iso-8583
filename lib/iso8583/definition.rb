@@ -13,6 +13,7 @@ module ISO8583
     # Codec definition.
     A   = //
     N   = //
+    S   = //
     AN  = //
     AS  = //
     NS  = //

@@ -1,16 +1,12 @@
 module ISO8583
-  class Field
-    attr_reader :id, :data, :value, :options
+  class Field < BaseField
+    attr_reader :id, :value, :options
 
     def initialize(id, data, options)
+      super(data)
       @id = id
-      @data = data
       @options = options
       @value = extract_value
-    end
-
-    def to_s
-      @data
     end
 
     private

@@ -11,6 +11,14 @@ RSpec.describe ISO8583::Util do
     it { expect(subject.hex_to_bin('9')).to eql '1001' }
   end
 
+  describe '.bin_to_hex' do
+    it { expect(subject.bin_to_hex('1100')).to eql 'C' }
+    it { expect(subject.bin_to_hex('0001')).to eql '1' }
+    it { expect(subject.bin_to_hex('0100')).to eql '4' }
+    it { expect(subject.bin_to_hex('0111')).to eql '7' }
+    it { expect(subject.bin_to_hex('1001')).to eql '9' }
+  end
+
   describe '.indexes' do
     it { expect(subject.indexes('1001001', /1/)).to eql [0, 3, 6] }
     it { expect(subject.indexes('1001001', /0/)).to eql [1, 2, 4, 5] }
