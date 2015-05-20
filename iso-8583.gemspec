@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'A simple gem to work with ISO8583 standard'
   spec.description   = 'This gem allows you to work with ISO8583 (Financial transaction card originated messages).'
-  spec.homepage      = 'https://github.com/alejandrogutierrez/ISO-8583'
+  spec.homepage      = 'https://github.com/alejandrogutierrez/iso-8583'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
