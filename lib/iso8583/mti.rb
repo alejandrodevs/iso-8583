@@ -1,19 +1,29 @@
 module ISO8583
-  class MTI < String
+  class MTI
+    attr_accessor :data
+
+    def initialize(data)
+      @data = data
+    end
+
     def iso_version
-      ISOVersion.new(self[0])
+      ISOVersion.new(data[0])
     end
 
     def message_class
-      MessageClass.new(self[1])
+      MessageClass.new(data[1])
     end
 
     def message_function
-      MessageFunction.new(self[2])
+      MessageFunction.new(data[2])
     end
 
     def message_origin
-      MessageOrigin.new(self[3])
+      MessageOrigin.new(data[3])
+    end
+
+    def to_s
+      @data
     end
   end
 end

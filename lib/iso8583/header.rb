@@ -1,5 +1,5 @@
 module ISO8583
-  class Data
+  class Header
     attr_accessor :data
 
     def initialize(data)

@@ -1,24 +1,22 @@
 module ISO8583
   class Message
-    MTI_LENGTH  = 4
-    BMP_LENGTH  = 16
-    HDR_LENGTH  = 15
+    MTI_LENGTH = 4
+    BMP_LENGTH = 16
+    HDR_LENGTH = 12
 
     attr_reader :header, :mti, :bitmap, :data, :fields
 
     def initialize(message)
-      @fields = []
+      @fields = {}
       parse(message) if message
-      super(message)
     end
 
     def parse(message)
-      @header   = Header.new(message.slice!(0, HDR_LENGTH)) if message.starts_with?('ISO')
-      @mti      = MTI.new(message.slice!(0, MTI_LENGTH))
-      @bitmap1  = Bitmap.new(message.slice!(0, BMP_LENGTH))
-      @bitmap2  = Bitmap.new(message.slice(0, BMP_LENGTH)) if bitmap1.has_element?(1)
-      @bitmap   = Bitmap.new([bitmap1, bitmap2].join)
-      @data     = Data.new(message)
+      @header = Header.new(message.slice!(0, HDR_LENGTH)) if message.start_with?('ISO')
+      @mti    = MTI.new(message.slice!(0, MTI_LENGTH))
+      @bitmap = Bitmap.new(message.slice!(0, BMP_LENGTH))
+      @data   = Data.new(message)
+      extract_fields_from_bitmap
     end
 
     def header=(value)
@@ -30,7 +28,24 @@ module ISO8583
     end
 
     def to_s
-      "#{header}#{mti}#{bitmap1}#{data}"
+      "#{header}#{mti}#{bitmap}#{data}"
+    end
+
+    def fields
+      @fields.dup
+    end
+
+    private
+
+    def extract_fields_from_bitmap
+      index = 0
+      bitmap.elements.each do |element|
+        definition  = Definition::FIELDS[element.to_s.to_sym]
+        extractor   = Definition.const_get(definition[:type])
+        information = extractor.call(data.data, definition[:length], index)
+        @fields[element] = Field.new(information, definition)
+        index += information.size
+      end
     end
   end
 end

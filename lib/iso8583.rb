@@ -1,6 +1,7 @@
 require 'iso8583/version'
 require 'iso8583/util'
 require 'iso8583/message'
+require 'iso8583/header'
 require 'iso8583/mti'
 require 'iso8583/mti/base_field'
 require 'iso8583/mti/iso_version'
