@@ -39,11 +39,11 @@ module ISO8583
 
     def extract_fields_from_bitmap
       index = 0
-      bitmap.elements.each do |element|
-        definition  = Definition::FIELDS[element.to_s.to_sym]
+      bitmap.elements.each do |el|
+        definition  = Definition::FIELDS[el]
         extractor   = Definition.const_get(definition[:type])
-        information = extractor.call(data.data, definition[:length], index)
-        @fields[element] = Field.new(information, definition)
+        information = extractor.call(data, definition, index)
+        @fields[el] = Field.new(el, information, definition)
         index += information.size
       end
     end

@@ -1,10 +1,11 @@
 module ISO8583
   class Field
-    attr_reader :data, :value, :definition
+    attr_reader :field, :data, :value, :options
 
-    def initialize(data, definition)
+    def initialize(field, data, options)
+      @field = field
       @data = data
-      @definition = definition
+      @options = options
       @value = extract_value
     end
 
@@ -15,9 +16,9 @@ module ISO8583
     private
 
     def extract_value
-      return data[1, data.size] if definition[:type] == :LVAR
-      return data[2, data.size] if definition[:type] == :LLVAR
-      return data[3, data.size] if definition[:type] == :LLLVAR
+      return data[1, data.size] if options[:type] == :LVAR
+      return data[2, data.size] if options[:type] == :LLVAR
+      return data[3, data.size] if options[:type] == :LLLVAR
       data
     end
   end

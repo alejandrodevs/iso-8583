@@ -1,18 +1,16 @@
 module ISO8583
   module Definition
-    # Length types definitions.
-    FIXED   = -> (data, length, index) { data[index, length] }
+    # General length types definition.
+    FIX = -> (data, length, index) { data[index, length] }
+    VAR = -> (data, length, index) { FIX.call(data, length + data[index, length].to_i, index) }
 
-    VAR = -> (data, index, size) do
-      length = data[index, size]
-      length + data[index + size, length.to_i]
-    end
+    # Length types definition.
+    FIXED   = -> (data, definition, index) { FIX.call(data.data, definition[:length], index) }
+    LVAR    = -> (data, definition, index) { VAR.call(data.data, 1, index) }
+    LLVAR   = -> (data, definition, index) { VAR.call(data.data, 2, index) }
+    LLLVAR  = -> (data, definition, index) { VAR.call(data.data, 3, index) }
 
-    LVAR    = -> (data, length, index) { VAR.call(data, index, 1) }
-    LLVAR   = -> (data, length, index) { VAR.call(data, index, 2) }
-    LLLVAR  = -> (data, length, index) { VAR.call(data, index, 3) }
-
-    # Codec definitions.
+    # Codec definition.
     A   = //
     N   = //
     AN  = //
@@ -24,20 +22,20 @@ module ISO8583
 
     # Fields mapping.
     FIELDS = {
-      '1':    { field: 1,   length: 16,   codec: :B,   type: :FIXED },
-      '2':    { field: 2,   length: 19,   codec: :N,   type: :LLVAR },
-      '3':    { field: 3,   length: 6,    codec: :N,   type: :FIXED },
-      '4':    { field: 4,   length: 12,   codec: :N,   type: :FIXED },
-      '7':    { field: 7,   length: 10,   codec: :N,   type: :FIXED },
-      '11':   { field: 11,  length: 6,    codec: :N,   type: :FIXED },
-      '12':   { field: 12,  length: 6,    codec: :N,   type: :FIXED },
-      '13':   { field: 13,  length: 4,    codec: :N,   type: :FIXED },
-      '17':   { field: 17,  length: 4,    codec: :N,   type: :FIXED },
-      '37':   { field: 37,  length: 12,   codec: :AN,  type: :FIXED },
-      '39':   { field: 39,  length: 2,    codec: :AN,  type: :FIXED },
-      '41':   { field: 41,  length: 16,   codec: :ANS, type: :FIXED },
-      '49':   { field: 49,  length: 3,    codec: :N,   type: :FIXED },
-      '70':   { field: 70,  length: 3,    codec: :N,   type: :FIXED },
+      1   => { length: 16,   codec: :B,   type: :FIXED },
+      2   => { length: 19,   codec: :N,   type: :LLVAR },
+      3   => { length: 6,    codec: :N,   type: :FIXED },
+      4   => { length: 12,   codec: :N,   type: :FIXED },
+      7   => { length: 10,   codec: :N,   type: :FIXED },
+      11  => { length: 6,    codec: :N,   type: :FIXED },
+      12  => { length: 6,    codec: :N,   type: :FIXED },
+      13  => { length: 4,    codec: :N,   type: :FIXED },
+      17  => { length: 4,    codec: :N,   type: :FIXED },
+      37  => { length: 12,   codec: :AN,  type: :FIXED },
+      39  => { length: 2,    codec: :AN,  type: :FIXED },
+      41  => { length: 16,   codec: :ANS, type: :FIXED },
+      49  => { length: 3,    codec: :N,   type: :FIXED },
+      70  => { length: 3,    codec: :N,   type: :FIXED },
     }
   end
 end
