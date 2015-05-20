@@ -1,34 +1,36 @@
 module ISO8583
-  class Message < String
-    MTI_START   = 0
+  class Message
     MTI_LENGTH  = 4
-
-    BMP_START   = 4
     BMP_LENGTH  = 16
+    HDR_LENGTH  = 15
 
-    def mti
-      MTI.new(self[MTI_START, MTI_LENGTH])
+    attr_reader :header, :mti, :bitmap, :data, :fields
+
+    def initialize(message)
+      @fields = []
+      parse(message) if message
+      super(message)
     end
 
-    def bitmap
-      Bitmap.new([primary_bitmap, secondary_bitmap].map(&:to_s).join)
+    def parse(message)
+      @header   = Header.new(message.slice!(0, HDR_LENGTH)) if message.starts_with?('ISO')
+      @mti      = MTI.new(message.slice!(0, MTI_LENGTH))
+      @bitmap1  = Bitmap.new(message.slice!(0, BMP_LENGTH))
+      @bitmap2  = Bitmap.new(message.slice(0, BMP_LENGTH)) if bitmap1.has_element?(1)
+      @bitmap   = Bitmap.new([bitmap1, bitmap2].join)
+      @data     = Data.new(message)
     end
 
-    def primary_bitmap
-      Bitmap.new(self[BMP_START, BMP_LENGTH])
+    def header=(value)
+      @header = Header.new(value)
     end
 
-    def secondary_bitmap
-      return unless primary_bitmap && primary_bitmap.elements.include?(1)
-      Bitmap.new(self[BMP_START + (BMP_LENGTH * 1), BMP_LENGTH])
+    def mti=(value)
+      @mti = MTI.new(value)
     end
 
-    def data
-      Data.new(self[(nodata.size)...size], bitmap.elements)
-    end
-
-    def nodata
-      mti + primary_bitmap
+    def to_s
+      "#{header}#{mti}#{bitmap1}#{data}"
     end
   end
 end
