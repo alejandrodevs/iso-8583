@@ -1,9 +1,9 @@
 module ISO8583
   class Field
-    attr_reader :field, :data, :value, :options
+    attr_reader :id, :data, :value, :options
 
-    def initialize(field, data, options)
-      @field = field
+    def initialize(id, data, options)
+      @id = id
       @data = data
       @options = options
       @value = extract_value

@@ -24,7 +24,7 @@ message.data    # => <ISO8583::Data:0x007fe7a33ac360 @data="08210832160157950030
 # Getting fields.
 message.fields.keys       # => [7, 11, 39]
 message.fields[7]         # => <ISO8583::Field:0x007fe7a31a2da8>
-message.fields[7].field   # => 7
+message.fields[7].id      # => 7
 message.fields[7].data    # => "0821083216"
 message.fields[7].value   # => "0821083216"
 message.fields[7].options # => {length: 10, codec: :N, type: :FIXED}
