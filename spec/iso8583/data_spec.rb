@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 RSpec.describe ISO8583::Data do
-  let(:data)   { '082108321601579500301' }
-  subject { described_class.new(data) }
-  it_behaves_like 'a base field'
+  let(:options) {{ length: 192, codec: :ANS, type: :VAR }}
+  subject { described_class.new(options) }
+
+  it_behaves_like 'a field'
 end

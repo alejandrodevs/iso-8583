@@ -1,93 +1,94 @@
 module ISO8583
   class Message
-    MTI_LENGTH = 4
-    BMP_LENGTH = 16
-    HDR_LENGTH = 12
-
     attr_reader :header, :mti, :bitmap, :data, :fields
 
     def initialize(message = nil)
-      @fields = {}
-      parse(message) if message
+      @header = Header.new(HDR_DEFINITION)
+      @mti    = MTI.new(MTI_DEFINITION)
+      @bitmap = Bitmap.new(BMP_DEFINITION)
+      @data   = Data.new(DTA_DEFINITION)
+      @fields = Fields.new
     end
 
-    def header=(value)
-      @header.data = value
+    def header=(data)
+      @header.data = data
     end
 
-    def mti=(value)
-      @mti.data = value
+    def mti=(data)
+      @mti.data = data
     end
 
     def to_s
       "#{header}#{mti}#{bitmap}#{data}"
     end
 
-    def fields
-      @fields.dup
+    def set_field(id, data)
+      field = add_field(id, data)
+      update_message
+      field
     end
 
-    def add_field(id, value)
-      @fields[id] = Field.new(id, value, Definition::FIELDS[id])
-      update_fields_order
-      update_bitmap_from_fields
-      update_data_from_fields
+    def unset_field(id)
+      field = delete_field(id)
+      update_message
+      field
     end
 
     private
 
-    def parse(message)
-      @header = Header.new(message.slice!(0, HDR_LENGTH)) if message.start_with?('ISO')
-      @mti    = MTI.new(message.slice!(0, MTI_LENGTH))
-      @bitmap = Bitmap.new(message.slice!(0, BMP_LENGTH))
-      @data   = Data.new(message)
-      update_fields_from_bitmap
+    def add_field(id, data)
+      field = DataField.new(id, FIELDS[id])
+      field.data = data
+      fields.add(field)
     end
 
-    def update_fields_order
-      @fields = fields.sort.to_h
+    def delete_field(id)
+      fields.delete(id)
     end
 
-    def update_fields_from_bitmap
-      index = 0
-      elements.each do |el|
-        definition  = Definition::FIELDS[el]
-        extractor   = Definition.const_get(definition[:type])
-        information = extractor.call(data, definition, index)
-        @fields[el] = Field.new(el, information, definition)
-        index += information.size
-      end
+    def update_message
+      remove_bitmap_fields
+      update_bitmap_fields
+      update_data
     end
 
-    def update_data_from_fields
-      @data = Data.new(fields.values.map(&:data).join)
+    def remove_bitmap_fields
+      delete_field(1)
+      delete_field(65)
     end
 
-    def update_bitmap_from_fields
-      bitmaps = fields_to_hex.scan(/.{1,#{BMP_LENGTH}}/)
-      @bitmap = Bitmap.new(bitmaps[0])
-      @fields[1]  = Field.new(1, bitmaps[1], Definition::FIELDS[1]) if bitmaps[1]
-      @fields[65] = Field.new(65, bitmaps[65], Definition::FIELDS[65]) if bitmaps[2]
-      update_fields_order
+    def update_bitmap_fields
+      bitmaps = get_bmps_from_fields
+      bitmap.data = bitmaps[0]
+      add_field(1,  bitmaps[1]) if bitmaps[1]
+      add_field(65, bitmaps[2]) if bitmaps[2]
     end
 
-    def fields_to_bin
-      ((fields.keys.max / 64.0).ceil * 64).times.map do |e|
-        fields.keys.include?(e + 1) ? '1' : '0'
-      end.join
+    def update_data
+      @data.data = fields.data.values.map(&:data).join
     end
 
-    def fields_to_hex
-      fields_to_bin.scan(/.{1,#{4}}/).map do |e|
-        Util.bin_to_hex(e)
-      end.join
+    def bmp_from_fields
+      fields_range.map { |e| bmp_id?(e) ? 1 : 0 }.join
     end
 
-    def elements
-      ids = bitmap.elements
-      ids.concat(Bitmap.new(fields[1]).elements) if fields[1]
-      ids.concat(Bitmap.new(fields[65]).elements) if fields[65]
-      ids
+    def bmp_id?(id)
+      fields.ids.any? && (fields.ids.include?(id) ||
+        (id == 1  && fields.ids.max > 65) ||
+        (id == 65 && fields.ids.max > 129))
+    end
+
+    def hmp_from_fields
+      Util.bin_to_hex(bmp_from_fields)
+    end
+
+    def fields_range
+      return 1..64 if fields.ids.empty?
+      1..(fields.ids.max / 64.0).ceil * 64
+    end
+
+    def get_bmps_from_fields
+      Util.each_slice(hmp_from_fields, BMP_LENGTH)
     end
   end
 end

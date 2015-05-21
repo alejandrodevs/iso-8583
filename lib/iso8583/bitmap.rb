@@ -1,10 +1,12 @@
 module ISO8583
-  class Bitmap < BaseField
+  class Bitmap < Field
     def bmp
-      data.split('').map { |c| Util.hex_to_bin(c) }.join
+      return unless data
+      Util.hex_to_bin(data)
     end
 
-    def elements
+    def ids
+      return [] unless data
       Util.indexes(bmp, /1/).map(&:next)
     end
   end
