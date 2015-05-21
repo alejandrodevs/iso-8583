@@ -8,4 +8,5 @@ module ISO8583
   ANS = Codec.new(//, 'alpha, numeric and special')
   B   = Codec.new(//, 'binary')
   Z   = Codec.new(//, 'ISO/IEC 7813 track 2 or 3')
+  ALL = Codec.new(//, 'wildcard')
 end
