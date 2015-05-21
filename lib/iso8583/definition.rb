@@ -11,15 +11,15 @@ module ISO8583
     LLLVAR  = -> (data, definition, index) { VAR.call(data.data, 3, index) }
 
     # Codec definition.
-    A   = //
-    N   = //
-    S   = //
-    AN  = //
-    AS  = //
-    NS  = //
-    ANS = //
-    B   = //
-    Z   = //
+    A   = Codec.new(//, 'alpha')
+    N   = Codec.new(//, 'numeric')
+    S   = Codec.new(//, 'special')
+    AN  = Codec.new(//, 'alphanumeric')
+    AS  = Codec.new(//, 'alpha and special')
+    NS  = Codec.new(//, 'numeric and special')
+    ANS = Codec.new(//, 'alpha, numeric and special')
+    B   = Codec.new(//, 'binary')
+    Z   = Codec.new(//, 'ISO/IEC 7813 track 2 or 3')
 
     # Fields mapping.
     FIELDS = {

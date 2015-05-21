@@ -12,11 +12,11 @@ module ISO8583
     end
 
     def header=(value)
-      @header = Header.new(value)
+      @header.data = value
     end
 
     def mti=(value)
-      @mti = MTI.new(value)
+      @mti.data = value
     end
 
     def to_s
