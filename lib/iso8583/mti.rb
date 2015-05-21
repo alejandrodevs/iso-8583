@@ -1,3 +1,3 @@
 module ISO8583
-  class MTI < BaseField; end
+  class MTI < Field; end
 end

@@ -3,9 +3,9 @@ module ISO8583
     attr_reader :data, :length, :codec, :type
 
     def initialize(data, length:, codec:, type:)
-      @codec = codec
-      @length = length
-      @type = type
+      @codec    = codec
+      @length   = length
+      @type     = type
       self.data = data
     end
 

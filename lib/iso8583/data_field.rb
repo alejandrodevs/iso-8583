@@ -1,20 +1,18 @@
 module ISO8583
   class DataField < Field
-    attr_reader :id, :value, :options
+    attr_reader :id
 
     def initialize(id, data, options)
-      super(data)
       @id = id
-      @options = options
-      @value = extract_value
+      super(data, options)
     end
 
     private
 
-    def extract_value
-      return data[1, data.size] if options[:type] == :LVAR
-      return data[2, data.size] if options[:type] == :LLVAR
-      return data[3, data.size] if options[:type] == :LLLVAR
+    def value
+      return data[1, data.size] if type == :LVAR
+      return data[2, data.size] if type == :LLVAR
+      return data[3, data.size] if type == :LLLVAR
       data
     end
   end

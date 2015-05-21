@@ -5,8 +5,8 @@ module ISO8583
         char.to_i(16).to_s(2).rjust(4, '0')
       end
 
-      def bin_to_hex(char)
-        char.to_i(2).to_s(16).upcase
+      def bin_to_hex(str)
+        str.to_i(2).to_s(16).upcase
       end
 
       def indexes(string, regex)

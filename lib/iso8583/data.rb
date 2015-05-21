@@ -1,3 +1,3 @@
 module ISO8583
-  class Data < BaseField; end
+  class Data < Field; end
 end
