@@ -8,11 +8,14 @@ module ISO8583
       @type   = type
     end
 
-    def data=(value)
-      raise ISO8583CodecException,  "Must match /#{codec.source}/"  if value !~ codec
-      raise ISO8583LengthException, "Must have length == #{length}" if value.size != length && @type == :FIXED
-      raise ISO8583LengthException, "Must have length <= #{length}" if value.size >  length && @type != :FIXED
-      @data = encode(value)
+    def encode(value)
+      @data  = type.encode(value)
+      @value = value
+    end
+
+    def decode(data)
+      @value = type.decode(data)
+      @data  = data
     end
 
     def to_s
@@ -25,12 +28,6 @@ module ISO8583
 
     def type
       ISO8583.const_get(@type)
-    end
-
-    private
-
-    def encode(value)
-      type.call(value)
     end
   end
 end

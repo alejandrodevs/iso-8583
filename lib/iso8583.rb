@@ -8,6 +8,7 @@ require 'iso8583/header'
 require 'iso8583/mti'
 require 'iso8583/bitmap'
 require 'iso8583/data'
+require 'iso8583/field_type'
 
 require 'iso8583/message'
 require 'iso8583/data_field'

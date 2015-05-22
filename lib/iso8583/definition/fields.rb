@@ -7,7 +7,7 @@ module ISO8583
   HDR_DEFINITION = { length: HDR_LENGTH, codec: :AN,  type: :FIXED }
   MTI_DEFINITION = { length: MTI_LENGTH, codec: :N,   type: :FIXED }
   BMP_DEFINITION = { length: BMP_LENGTH, codec: :AN,  type: :FIXED }
-  DTA_DEFINITION = { length: DTA_LENGTH, codec: :ALL, type: :INF }
+  DTA_DEFINITION = { length: DTA_LENGTH, codec: :ALL, type: :VAR }
 
   FIELDS = {
     1   => { length: 16,   codec: :AN,  type: :FIXED },

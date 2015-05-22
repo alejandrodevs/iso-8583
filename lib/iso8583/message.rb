@@ -10,20 +10,20 @@ module ISO8583
       @fields = Fields.new
     end
 
-    def header=(data)
-      @header.data = data
+    def header=(value)
+      @header.encode(value)
     end
 
-    def mti=(data)
-      @mti.data = data
+    def mti=(value)
+      @mti.encode(value)
     end
 
     def to_s
       "#{header}#{mti}#{bitmap}#{data}"
     end
 
-    def set_field(id, data)
-      field = add_field(id, data)
+    def set_field(id, value)
+      field = add_field(id, value)
       update_message
       field
     end
@@ -36,9 +36,9 @@ module ISO8583
 
     private
 
-    def add_field(id, data)
+    def add_field(id, value)
       field = DataField.new(id, FIELDS[id])
-      field.data = data
+      field.encode(value)
       fields.add(field)
     end
 
@@ -59,13 +59,13 @@ module ISO8583
 
     def update_bitmap_fields
       bitmaps = get_bmps_from_fields
-      bitmap.data = bitmaps[0]
+      bitmap.encode(bitmaps[0])
       add_field(1,  bitmaps[1]) if bitmaps[1]
       add_field(65, bitmaps[2]) if bitmaps[2]
     end
 
     def update_data
-      @data.data = fields.data.values.map(&:data).join
+      @data.encode(fields.data.values.map(&:data).join)
     end
 
     def bmp_from_fields
