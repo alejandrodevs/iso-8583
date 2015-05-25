@@ -59,6 +59,18 @@ message.bitmap  # => <ISO8583::Bitmap:0x007fe7a33ac388 @data="0200000000000000">
 message.to_s    # => "ISO021100055081002000000000000000821083216"
 ```
 
+### Exceptions
+```ruby
+require 'iso8583'
+
+message = ISO8583::Message.new
+
+# Raising exceptions.
+# ISO 8583 defines that data element 11 must be numeric and have length of 6.
+message.set_field(11, '01579A') # ISO8583::ISO8583CodecException: Must match /^[0-9]*$/
+message.set_field(11, '01579') # ISO8583::ISO8583LengthException: Must have length == 6
+```
+
 
 ## Contributing
 1. Fork it
