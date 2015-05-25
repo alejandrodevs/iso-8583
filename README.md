@@ -31,8 +31,8 @@ message.fields[7].id      # => 7
 message.fields[7].data    # => "0821083216"
 message.fields[7].value   # => "0821083216"
 message.fields[7].length  # => 10
-message.fields[7].codec   # => :N
-message.fields[7].type    # => :FIXED
+message.fields[7].codec   # => /^[0-9]*$/
+message.fields[7].type    # => <ISO8583::FieldType:0x007ffaf9a86528>
 ```
 
 ### Encoding a ISO 8583 message
