@@ -8,13 +8,12 @@ module ISO8583
 
     def add(field)
       @data[field.id] = field
-      sort
+      @data = data.sort.to_h
       field
     end
 
     def delete(id)
       @data.delete(id)
-      sort
       id
     end
 
@@ -24,12 +23,6 @@ module ISO8583
 
     def [](id)
       @data[id]
-    end
-
-    private
-
-    def sort
-      @data = data.sort.to_h
     end
   end
 end
