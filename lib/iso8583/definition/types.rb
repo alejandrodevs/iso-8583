@@ -10,7 +10,6 @@ module ISO8583
   FIXED.decoder = FIXED_ENCODER
 
 
-
   VAR_ENCODER = -> (value, codec, length) do
     raise ISO8583CodecException,  "Must match /#{codec.source}/"  if value !~ codec
     raise ISO8583LengthException, "Must have length <= #{length}" if value.size > length
@@ -20,7 +19,6 @@ module ISO8583
   VAR = FieldType.new
   VAR.encoder = VAR_ENCODER
   VAR.decoder = VAR_ENCODER
-
 
 
 

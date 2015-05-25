@@ -73,6 +73,7 @@ message.header = 'ISO02'  # => ISO8583::ISO8583LengthException: Must have length
 # ISO 8583 defines that data element 11 must be numeric and have length of 6.
 message.set_field(11, '01579A') # => ISO8583::ISO8583CodecException: Must match /^[0-9]*$/
 message.set_field(11, '01579')  # => ISO8583::ISO8583LengthException: Must have length == 6
+message.set_field(11, '015795') # => OK
 ```
 
 
