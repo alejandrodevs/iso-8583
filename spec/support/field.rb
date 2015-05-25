@@ -10,11 +10,11 @@ RSpec.shared_examples 'a field' do
   end
 
   describe '#codec' do
-    it { expect(subject.codec).to eql options[:codec] }
+    it { expect(subject.codec).to eql ISO8583.const_get(options[:codec]) }
   end
 
   describe '#type' do
-    it { expect(subject.type).to eql options[:type] }
+    it { expect(subject.type).to eql ISO8583.const_get(options[:type]) }
   end
 
   describe '#to_s' do

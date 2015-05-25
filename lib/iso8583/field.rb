@@ -9,12 +9,12 @@ module ISO8583
     end
 
     def encode(value)
-      @data  = type.encode(value)
+      @data  = type.encode(value, codec, length)
       @value = value
     end
 
     def decode(data)
-      @value = type.decode(data)
+      @value = type.decode(data, codec, length)
       @data  = data
     end
 
