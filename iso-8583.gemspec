@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Alejandro Gutiérrez']
   spec.email         = ['alejandrodevs@gmail.com']
 
-  spec.summary       = 'A simple gem to work with ISO8583 standard'
+  spec.summary       = 'ISO 8583 Financial Messaging for Ruby'
   spec.description   = 'This gem allows you to work with ISO8583 (Financial transaction card originated messages).'
   spec.homepage      = 'https://github.com/alejandrogutierrez/iso-8583'
   spec.license       = 'MIT'
