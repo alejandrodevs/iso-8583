@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/alejandrogutierrez/iso-8583.png?branch=master)](https://travis-ci.org/alejandrogutierrez/iso-8583) [![Coverage Status](https://coveralls.io/repos/alejandrogutierrez/iso-8583/badge.svg?branch=master)](https://coveralls.io/r/alejandrogutierrez/iso-8583?branch=master)
 
 ISO 8583 Financial Messaging for Ruby. This gem aims to provide a easy
-and simple way to code an decode ISO 8583 Financial Messages.
+and simple way to encode and decode ISO 8583 Financial Messages.
 
 
 ## Installation

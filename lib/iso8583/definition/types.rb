@@ -1,4 +1,8 @@
 module ISO8583
+  FIXED_EXTRACTOR = -> (data, length, index) do
+    data[index, length]
+  end
+
   FIXED_ENCODER = -> (value, codec, length) do
     raise ISO8583CodecException,  "Must match /#{codec.source}/"  if value !~ codec
     raise ISO8583LengthException, "Must have length == #{length}" if value.size != length
@@ -6,9 +10,14 @@ module ISO8583
   end
 
   FIXED = FieldType.new
-  FIXED.encoder = FIXED_ENCODER
-  FIXED.decoder = FIXED_ENCODER
+  FIXED.encoder   = FIXED_ENCODER
+  FIXED.decoder   = FIXED_ENCODER
+  FIXED.extractor = FIXED_EXTRACTOR
 
+
+  VAR_EXTRACTOR = -> (data, length, index) do
+    data[index, data.size]
+  end
 
   VAR_ENCODER = -> (value, codec, length) do
     raise ISO8583CodecException,  "Must match /#{codec.source}/"  if value !~ codec
@@ -17,8 +26,9 @@ module ISO8583
   end
 
   VAR = FieldType.new
-  VAR.encoder = VAR_ENCODER
-  VAR.decoder = VAR_ENCODER
+  VAR.encoder   = VAR_ENCODER
+  VAR.decoder   = VAR_ENCODER
+  VAR.extractor = VAR_EXTRACTOR
 
 
 
@@ -36,6 +46,10 @@ module ISO8583
       value  = data[index, data.size]
       FIXED_ENCODER.call(value, codec, length)
       value
+    end
+
+    type.extractor = -> (data, length, start) do
+      FIXED_EXTRACTOR.call(data, index + data[start, index].to_i, start)
     end
   end
 end

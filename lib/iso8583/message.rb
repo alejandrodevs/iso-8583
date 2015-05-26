@@ -8,6 +8,7 @@ module ISO8583
       @bitmap = Bitmap.new(BMP_DEFINITION)
       @data   = Data.new(DTA_DEFINITION)
       @fields = Fields.new
+      parse(message) if message
     end
 
     def header=(value)
@@ -89,6 +90,39 @@ module ISO8583
 
     def get_bmps_from_fields
       Util.each_slice(hmp_from_fields, BMP_LENGTH)
+    end
+
+    def parse(message)
+      @header.encode(message.slice!(0, HDR_LENGTH)) if message.start_with?('ISO')
+      @mti.encode(message.slice!(0, MTI_LENGTH))
+      @bitmap.encode(message.slice!(0, BMP_LENGTH))
+      @data.encode(message)
+      parse_fields
+    end
+
+    def parse_fields
+      index = 0
+      bitmap.ids.each do |el|
+        field_id    = el
+        definition  = FIELDS[field_id]
+        field_type  = ISO8583.const_get(definition[:type])
+        information = field_type.extract(data.to_s, definition[:length], index)
+        add_field(field_id, information)
+        index += information.size
+      end
+
+      return unless fields[1]
+      bitmap2 = Bitmap.new(BMP_DEFINITION)
+      bitmap2.encode(fields[1].data)
+
+      bitmap2.ids.each do |el|
+        field_id    = el + 64
+        definition  = FIELDS[field_id]
+        field_type  = ISO8583.const_get(definition[:type])
+        information = field_type.extract(data.to_s, definition[:length], index)
+        add_field(field_id, information)
+        index += information.size
+      end
     end
   end
 end
